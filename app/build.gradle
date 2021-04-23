@@ -43,6 +43,7 @@ dependencies {
     // Sceneform
     implementation 'com.google.ar.sceneform:core:1.15.0'
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
 }
 
 sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.obj',    // 사용하고자 하는 3D 객체 파일의 경로

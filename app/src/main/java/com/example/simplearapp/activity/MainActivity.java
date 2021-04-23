@@ -28,12 +28,12 @@ import com.google.ar.sceneform.ux.TransformableNode;
 // 링크 https://aidalab.tistory.com/64?category=805476
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private Context mContext;
 
     //ArFragment는 AR 시스템의 상태를 관리하고 세션의 수명주기를 처리하는 ARCore API의 주요 진입점의 역할을 한다
     //ArFragment 클래스를 사용하여 세션의 생성, 구성, 시작 및 중지가 가능하며, 카메라 이미지와 장치, 포즈에 접근할 수 있는 프레임을 수신한다.
     private ArFragment arFragment;
-
     private Session mSession;
     private boolean mUserRequestInstall = true;
 
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         if (!Util.checkIsSupportedDeviceOrFinish(this)) {
             return;
         }
-        ;
         setContentView(R.layout.activity_main);
         mContext = this;
 
@@ -69,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 AnchorNode anchorNode = new AnchorNode(anchor);
                 anchorNode.setParent(arFragment.getArSceneView().getScene());
 
+                //참조 https://urbanbase.github.io/dev/2020/03/06/Sceneform-AR.html
                 TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
                 andy.setParent(anchorNode);
                 andy.setRenderable(modelRenderable);
