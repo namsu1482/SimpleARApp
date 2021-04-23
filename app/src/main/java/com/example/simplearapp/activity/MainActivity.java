@@ -1,8 +1,4 @@
-package com.example.simplearapp;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+package com.example.simplearapp.activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -11,6 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.simplearapp.R;
 import com.example.simplearapp.Util.Util;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
@@ -19,7 +20,6 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.BaseArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         requestCameraPermission();
-
         try {
             if (mSession == null) {
                 switch (ArCoreApk.getInstance().requestInstall(this, mUserRequestInstall)) {
@@ -93,14 +92,11 @@ public class MainActivity extends AppCompatActivity {
                         mUserRequestInstall = false;
                         Log.i(TAG, "Session creation is failed");
                         return;
-
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void requestCameraPermission() {
@@ -108,4 +104,5 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
         }
     }
+
 }

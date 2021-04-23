@@ -45,7 +45,8 @@ dependencies {
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
 }
 
-sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.obj',	// 사용하고자 하는 3D 객체 파일의 경로
-        'default',				// 재질(Material) 경로
-        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.sfa',		// sfa 파일의 출력 경로
-        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/src/main/res/raw/andy')		// sfb 파일의 출력 경로
+sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.obj',    // 사용하고자 하는 3D 객체 파일의 경로
+        'default',                // 재질(Material) 경로
+        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.sfa',        // sfa 파일의 출력 경로
+        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/src/main/res/raw/andy')        // sfb 파일의 출력 경로
+
