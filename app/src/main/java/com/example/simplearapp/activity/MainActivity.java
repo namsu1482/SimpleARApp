@@ -2,10 +2,13 @@ package com.example.simplearapp.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,11 +27,9 @@ import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.BaseArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
-
 // 링크 https://aidalab.tistory.com/64?category=805476
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-
     private Context mContext;
 
     //ArFragment는 AR 시스템의 상태를 관리하고 세션의 수명주기를 처리하는 ARCore API의 주요 진입점의 역할을 한다
@@ -47,9 +48,15 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         mContext = this;
+        Button btnObjectList = findViewById(R.id.btn_objectlist);
+        btnObjectList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, ObjectListActivity.class));
+            }
+        });
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-
         ModelRenderable.builder()
                 .setSource(mContext, R.raw.andy)
                 .build()
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Anchor anchor = hitResult.createAnchor();
                 AnchorNode anchorNode = new AnchorNode(anchor);
+                //                arFragment.getArSceneView().getScene().getCamera().setFarClipPlane(1000f);
                 anchorNode.setParent(arFragment.getArSceneView().getScene());
 
                 //참조 https://urbanbase.github.io/dev/2020/03/06/Sceneform-AR.html
@@ -104,5 +112,4 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
         }
     }
-
 }
