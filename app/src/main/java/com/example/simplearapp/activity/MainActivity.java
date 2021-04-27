@@ -6,30 +6,26 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.simplearapp.ArObjectHelper;
 import com.example.simplearapp.R;
 import com.example.simplearapp.Util.Util;
-import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
-import com.google.ar.core.HitResult;
-import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
-import com.google.ar.sceneform.AnchorNode;
-import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
-import com.google.ar.sceneform.ux.BaseArFragment;
-import com.google.ar.sceneform.ux.TransformableNode;
 
 // 링크 https://aidalab.tistory.com/64?category=805476
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int REQ_OBJECT_ITEM = 101;
     private Context mContext;
 
     //ArFragment는 AR 시스템의 상태를 관리하고 세션의 수명주기를 처리하는 ARCore API의 주요 진입점의 역할을 한다
@@ -37,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private Session mSession;
     private boolean mUserRequestInstall = true;
-
-    ModelRenderable modelRenderable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,37 +46,13 @@ public class MainActivity extends AppCompatActivity {
         btnObjectList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mContext, ObjectListActivity.class));
+                startActivityForResult(new Intent(mContext, ObjectListActivity.class), REQ_OBJECT_ITEM);
             }
         });
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        ModelRenderable.builder()
-                .setSource(mContext, R.raw.andy)
-                .build()
-                .thenAccept(renderable -> modelRenderable = renderable)
-                .exceptionally(throwable -> {
-                    Log.e(TAG, "Unable to load andy renderable");
-                    return null;
-                });
-        arFragment.setOnTapArPlaneListener(new BaseArFragment.OnTapArPlaneListener() {
-            @Override
-            public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
-                if (modelRenderable == null) {
-                    return;
-                }
-                Anchor anchor = hitResult.createAnchor();
-                AnchorNode anchorNode = new AnchorNode(anchor);
-                //                arFragment.getArSceneView().getScene().getCamera().setFarClipPlane(1000f);
-                anchorNode.setParent(arFragment.getArSceneView().getScene());
-
-                //참조 https://urbanbase.github.io/dev/2020/03/06/Sceneform-AR.html
-                TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
-                andy.setParent(anchorNode);
-                andy.setRenderable(modelRenderable);
-                andy.select();
-            }
-        });
+        ArObjectHelper arObjectHelper = new ArObjectHelper(mContext, arFragment, ArObjectHelper.OBJECT_TYPE.SPHERE);
+        arObjectHelper.setRenderable();
     }
 
     @Override
@@ -110,6 +80,13 @@ public class MainActivity extends AppCompatActivity {
     private void requestCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_OBJECT_ITEM) {
         }
     }
 }

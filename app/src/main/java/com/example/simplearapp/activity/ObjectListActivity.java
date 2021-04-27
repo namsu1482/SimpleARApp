@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -30,9 +31,10 @@ public class ObjectListActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        TypedArray list = getResources().obtainTypedArray(R.array.object_items);
         mObjectList = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            Drawable image = mContext.getResources().getDrawable(R.drawable.ic_launcher_foreground, getTheme());
+        for (int i = 0; i < list.length(); i++) {
+            Drawable image = mContext.getResources().getDrawable(list.getResourceId(i, -1), getTheme());
             ObjectItem objectItem = new ObjectItem(image);
             mObjectList.add(objectItem);
         }
