@@ -12,7 +12,6 @@ public class ArCoreActivity extends AppCompatActivity {
     private static final String TAG = ArCoreActivity.class.getSimpleName();
 
     private Context mContext;
-    ArFragment mArFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +19,9 @@ public class ArCoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ar_core);
 
         mContext = this;
+    }
+    private void initView(){
+
     }
 
 }

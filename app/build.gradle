@@ -44,6 +44,8 @@ dependencies {
     implementation 'com.google.ar.sceneform:core:1.15.0'
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.15.0"
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
+
+    implementation "com.google.ar.sceneform:animation:1.15.0"
 }
 
 sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.obj',    // 사용하고자 하는 3D 객체 파일의 경로
@@ -51,3 +53,9 @@ sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampleda
         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.sfa',        // sfa 파일의 출력 경로
         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/src/main/res/raw/andy')        // sfb 파일의 출력 경로
 
+sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_dance.fbx',
+        'default',
+        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_dance.sfa',
+        'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/src/main/res/raw/andy_dance',
+        ['C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_wave_r.fbx',
+         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_wave_l.fbx'])

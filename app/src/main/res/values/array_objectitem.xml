@@ -3,4 +3,8 @@
     <array name="object_items">
         <item>@drawable/outline_android_black_48</item>
     </array>
+
+    <array name="object_type">
+
+    </array>
 </resources>

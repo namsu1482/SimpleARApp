@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        ArObjectHelper arObjectHelper = new ArObjectHelper(mContext, arFragment, ArObjectHelper.OBJECT_TYPE.SPHERE);
+        ArObjectHelper arObjectHelper = new ArObjectHelper(mContext, arFragment, ArObjectHelper.OBJECT_TYPE.RESOURCE);
         arObjectHelper.setRenderable();
     }
 
