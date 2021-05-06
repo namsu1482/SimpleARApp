@@ -52,7 +52,7 @@ sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampleda
         'default',                // 재질(Material) 경로
         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy.sfa',        // sfa 파일의 출력 경로
         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/src/main/res/raw/andy')        // sfb 파일의 출력 경로
-
+//animationData assets
 sceneform.asset('C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_dance.fbx',
         'default',
         'C:/Users/namsu choi/AndroidStudioProjects/simpleAR/app/sampledata/models/andy_dance.sfa',

@@ -1,0 +1,24 @@
+{
+  "object_list": [
+    {
+      "name": "sample_object",
+      "image": "outline_android_black_36",
+      "object_type": "resource"
+    },
+    {
+      "name": "cube",
+      "image": "ic_cube_black_36dp",
+      "object_type": "cube"
+    },
+    {
+      "name": "cylinder",
+      "image": "ic_hockey_puck_black_36dp",
+      "object_type": "cylinder"
+    },
+    {
+      "name": "sphere",
+      "image": "ic_circle_black_36dp",
+      "object_type": "sphere"
+    }
+  ]
+}

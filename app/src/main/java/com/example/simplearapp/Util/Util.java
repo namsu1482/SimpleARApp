@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,4 +43,16 @@ public class Util {
         }
         return true;
     }
+
+    public static String getDeviceId(Context context) {
+        String deviceId = "";
+
+        String android_id = Settings.Secure.getString(
+                context.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        deviceId = android_id;
+
+        return deviceId;
+    }
+
 }

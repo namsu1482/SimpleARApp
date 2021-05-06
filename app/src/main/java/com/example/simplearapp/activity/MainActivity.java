@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.AppData;
 import com.example.simplearapp.ArObjectHelper;
 import com.example.simplearapp.R;
 import com.example.simplearapp.Util.Util;
@@ -33,6 +34,13 @@ public class MainActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private Session mSession;
     private boolean mUserRequestInstall = true;
+    private ArObjectHelper.OBJECT_TYPE mObjectType;
+
+    private Button mBtnObjectList;
+    private Button mBtnObjectDelete;
+    private Button mBtnDeleteFinish;
+
+    private ArObjectHelper mArObjectHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +50,50 @@ public class MainActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_main);
         mContext = this;
-        Button btnObjectList = findViewById(R.id.btn_objectlist);
-        btnObjectList.setOnClickListener(new View.OnClickListener() {
+        AppData.getInstance().ObjectType = ArObjectHelper.OBJECT_TYPE.RESOURCE;
+        initView();
+
+        mBtnObjectList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(mContext, ObjectListActivity.class), REQ_OBJECT_ITEM);
             }
         });
 
-        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
-        ArObjectHelper arObjectHelper = new ArObjectHelper(mContext, arFragment, ArObjectHelper.OBJECT_TYPE.RESOURCE);
-        arObjectHelper.setRenderable();
+        mBtnObjectDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBtnObjectList.setVisibility(View.GONE);
+                mBtnObjectDelete.setVisibility(View.GONE);
+
+                mBtnDeleteFinish.setVisibility(View.VISIBLE);
+
+//                mArObjectHelper = new ArObjectHelper(mContext, arFragment, mObjectType, false);
+                mArObjectHelper.setDeleteMode(true);
+//                mArObjectHelper.setRenderable();
+
+            }
+        });
+        mBtnDeleteFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBtnObjectList.setVisibility(View.VISIBLE);
+                mBtnObjectDelete.setVisibility(View.VISIBLE);
+
+                mBtnDeleteFinish.setVisibility(View.GONE);
+
+                mArObjectHelper.setDeleteMode(false);
+                mArObjectHelper.startRenderable();
+
+            }
+        });
+//        mArObjectHelper = new ArObjectHelper(mContext, arFragment, AppData.getInstance().ObjectType, true);
+//        mArObjectHelper.startRenderable();
+
+        mArObjectHelper = new ArObjectHelper(mContext, arFragment);
+        mArObjectHelper.setModel(AppData.getInstance().ObjectType);
+        mArObjectHelper.startRenderable();
+
     }
 
     @Override
@@ -87,6 +128,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_OBJECT_ITEM) {
+            if (resultCode == RESULT_OK) {
+                mObjectType = (ArObjectHelper.OBJECT_TYPE) data.getSerializableExtra("object_type");
+                AppData.getInstance().ObjectType = mObjectType;
+                Log.i(TAG, "object_type : " + mObjectType.name());
+
+                mArObjectHelper.setModel(mObjectType);
+
+//                mArObjectHelper.setObject_type(mObjectType);
+//                if (mObjectType.name().equals(ArObjectHelper.OBJECT_TYPE.RESOURCE)) {
+//                    mArObjectHelper.setAnimateObject(true);
+//
+//                } else {
+//                    mArObjectHelper.setAnimateObject(false);
+//                }
+                mArObjectHelper.startRenderable();
+            }
         }
+    }
+
+    private void initView() {
+        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
+        mBtnObjectList = findViewById(R.id.btn_objectlist);
+        mBtnObjectDelete = findViewById(R.id.btn_delete_mode);
+        mBtnDeleteFinish = findViewById(R.id.btn_delete_done);
+
+        mBtnDeleteFinish.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSession.close();
     }
 }

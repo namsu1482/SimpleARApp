@@ -1,13 +1,19 @@
 package com.example.simplearapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.AppData;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.sceneform.AnchorNode;
+import com.google.ar.sceneform.HitTestResult;
+import com.google.ar.sceneform.Node;
+import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.animation.ModelAnimator;
 import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.AnimationData;
@@ -27,12 +33,24 @@ import static android.graphics.Color.YELLOW;
 
 public class ArObjectHelper {
     private static final String TAG = ArObjectHelper.class.getSimpleName();
-    Context context;
+    private Context context;
 
-    ArFragment arFragment;
-    ModelRenderable modelRenderable;
-    OBJECT_TYPE object_type;
+    private ArFragment arFragment;
+    //AR Object
+    private ModelRenderable modelRenderable;
 
+    private OBJECT_TYPE object_type;
+    private boolean isAnimateObject = true;
+    private boolean isAnimationObjectRunning = false;
+
+    private boolean isDeleteMode = false;
+
+
+    public void setAnimateObject(boolean animateObject) {
+        isAnimateObject = animateObject;
+    }
+
+    // AR Object Type RESOURCE를 제외한 나머지 3개는 라이브러리에서 제공된다.
     public enum OBJECT_TYPE {
         CUBE,
         CYLINDER,
@@ -40,10 +58,38 @@ public class ArObjectHelper {
         RESOURCE
     }
 
-    public ArObjectHelper(Context context, ArFragment arFragment, OBJECT_TYPE object_type) {
+    public void setDeleteMode(boolean deleteMode) {
+        isDeleteMode = deleteMode;
+    }
+
+    public void setObject_type(OBJECT_TYPE object_type) {
+        this.object_type = object_type;
+    }
+
+    public ArObjectHelper(Context context, ArFragment arFragment, OBJECT_TYPE object_type, boolean isAnimateObject) {
         this.context = context;
         this.arFragment = arFragment;
         this.object_type = object_type;
+        this.isAnimateObject = isAnimateObject;
+    }
+
+    public ArObjectHelper(Context context, ArFragment arFragment) {
+        this.context = context;
+        this.arFragment = arFragment;
+    }
+
+    public void setModel(OBJECT_TYPE object_type) {
+        this.object_type = object_type;
+        setAnimObjectProperty();
+
+        buildObject(object_type);
+    }
+
+
+    public void setModel(OBJECT_TYPE object_type, boolean isAnimateObject) {
+        this.object_type = object_type;
+        this.isAnimateObject = isAnimateObject;
+
         buildObject(object_type);
     }
 
@@ -81,36 +127,49 @@ public class ArObjectHelper {
                         .build()
                         .thenAccept(renderable -> modelRenderable = renderable)
                         .exceptionally(throwable -> {
-                            Log.e(TAG, "Unable to load andy renderable");
+                            Log.e(TAG, "Unable to load object renderable");
                             return null;
                         });
                 break;
         }
     }
 
-    public void setRenderable() {
+    public void startRenderable() {
+        buildObject(object_type);
         arFragment.setOnTapArPlaneListener(new BaseArFragment.OnTapArPlaneListener() {
             @Override
             public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
                 if (modelRenderable == null) {
                     return;
                 }
-                Anchor anchor = hitResult.createAnchor();
-                AnchorNode anchorNode = new AnchorNode(anchor);
-                anchorNode.setParent(arFragment.getArSceneView().getScene());
+                // animation이 있는 Object는 1개만 사용가능함
+                if (!isAnimationObjectRunning) {
+                    Anchor anchor = hitResult.createAnchor();
+                    AnchorNode anchorNode = new AnchorNode(anchor);
+                    anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-                //참조 https://urbanbase.github.io/dev/2020/03/06/Sceneform-AR.html
-                TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
-                andy.setParent(anchorNode);
-                andy.setRenderable(modelRenderable);
-                setObjectAnimation(modelRenderable);
-                andy.select();
+                    //참조 https://urbanbase.github.io/dev/2020/03/06/Sceneform-AR.html
+                    TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
+                    andy.setParent(anchorNode);
+                    andy.setRenderable(modelRenderable);
+
+                    if (isAnimateObject) {
+                        setObjectAnimation();
+                        isAnimationObjectRunning = true;
+                    }
+                    andy.select();
+
+                } else {
+                    alertAnimObject();
+                }
             }
         });
-        modifyPlaneRenderer();
+
+        removeObject();
+//        modifyPlaneRenderer();
     }
 
-    // 바닥 렌더링 커스텀
+    // 이미지를 이용해 평면 렌더링
     private void modifyPlaneRenderer() {
         Texture.Sampler sampler = Texture.Sampler.builder()
                 // texture 확대
@@ -133,12 +192,82 @@ public class ArObjectHelper {
         }));
     }
 
-    private void setObjectAnimation(ModelRenderable modelRenderable) {
+    private void setObjectAnimation() {
         AnimationData animationData = modelRenderable.getAnimationData("andy_dance");
-        Log.i(TAG, animationData.getName());
         ModelAnimator modelAnimator = new ModelAnimator(animationData, modelRenderable);
 
         modelAnimator.start();
         modelAnimator.setRepeatCount(5);
+    }
+
+    private void stopAnimator() {
+        AnimationData animationData = modelRenderable.getAnimationData("andy_dance");
+        ModelAnimator modelAnimator = new ModelAnimator(animationData, modelRenderable);
+
+        modelAnimator.end();
+    }
+
+    private void alertAnimObject() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Object Alert");
+        builder.setMessage("animation Object can be used one");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+    }
+
+    private void removeObject() {
+        arFragment.getArSceneView().getScene().addOnPeekTouchListener(new Scene.OnPeekTouchListener() {
+            @Override
+            public void onPeekTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+                Log.i(TAG, "object touch");
+                if (isDeleteMode) {
+                    if (motionEvent.getAction() != MotionEvent.ACTION_UP) {
+                        return;
+                    }
+
+                    if (hitTestResult.getNode() != null) {
+                        Node hitNode = hitTestResult.getNode();
+
+                        if (hitNode.getRenderable() == modelRenderable) {
+                            Log.i(TAG, "object selected");
+                            if (isAnimateObject) {
+                                stopAnimator();
+                                initAnimProperty();
+                            }
+                            arFragment.getArSceneView().getScene().removeChild(hitNode);
+
+                            hitNode.setParent(null);
+                            hitNode = null;
+                        }
+                    }
+
+                } else {
+                    Log.i(TAG, "not Delete mode ");
+                }
+            }
+        });
+    }
+
+    private void initAnimProperty() {
+        if (AppData.getInstance().ObjectType == OBJECT_TYPE.RESOURCE) {
+            isAnimateObject = true;
+        } else {
+            isAnimateObject = false;
+        }
+        isAnimationObjectRunning = false;
+    }
+
+    private void setAnimObjectProperty() {
+        if (object_type != OBJECT_TYPE.RESOURCE) {
+            isAnimateObject = false;
+        } else {
+            isAnimateObject = true;
+        }
+
     }
 }
