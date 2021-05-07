@@ -66,13 +66,6 @@ public class ArObjectHelper {
         this.object_type = object_type;
     }
 
-    public ArObjectHelper(Context context, ArFragment arFragment, OBJECT_TYPE object_type, boolean isAnimateObject) {
-        this.context = context;
-        this.arFragment = arFragment;
-        this.object_type = object_type;
-        this.isAnimateObject = isAnimateObject;
-    }
-
     public ArObjectHelper(Context context, ArFragment arFragment) {
         this.context = context;
         this.arFragment = arFragment;
@@ -81,13 +74,6 @@ public class ArObjectHelper {
     public void setModel(OBJECT_TYPE object_type) {
         this.object_type = object_type;
         setAnimObjectProperty();
-
-        buildObject(object_type);
-    }
-
-    public void setModel(OBJECT_TYPE object_type, boolean isAnimateObject) {
-        this.object_type = object_type;
-        this.isAnimateObject = isAnimateObject;
 
         buildObject(object_type);
     }
