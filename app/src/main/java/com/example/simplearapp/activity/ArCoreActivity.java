@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.simplearapp.ArObjectHelper;
 import com.example.simplearapp.R;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Session;
@@ -25,12 +26,17 @@ public class ArCoreActivity extends AppCompatActivity {
 
     ArFragment mArFragment;
 
+    ArObjectHelper mArObjectHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar_core);
 
         mContext = this;
+        mArFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ar_core_fragment);
+        mArObjectHelper = new ArObjectHelper(mContext, mArFragment);
+
     }
 
     @Override
@@ -61,5 +67,11 @@ public class ArCoreActivity extends AppCompatActivity {
                     , new String[]{Manifest.permission.CAMERA}
                     , 0);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSession.close();
     }
 }

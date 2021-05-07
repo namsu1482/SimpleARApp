@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.AppData;
 import com.example.simplearapp.Model.ObjectItem;
 import com.example.simplearapp.ObjectListAdapter;
 import com.example.simplearapp.R;
@@ -47,36 +48,39 @@ public class ObjectListActivity extends AppCompatActivity {
     }
 
     private void parseObjectListJson() {
-        AssetManager assetManager = getResources().getAssets();
-        InputStream inputStream = null;
-        String jsonString = "";
-        try {
-            inputStream = assetManager.open("object_list.json");
-            int size = inputStream.available();
-            byte[] buffer = new byte[size];
-            inputStream.read(buffer);
-            inputStream.close();
-            jsonString = new String(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            JSONObject rootObject = new JSONObject(jsonString);
-            JSONArray jsonArray = rootObject.optJSONArray("object_list");
-            mObjectList = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.optJSONObject(i);
-                ObjectItem objectItem = new ObjectItem(mContext
-                        , jsonObject.optString("name")
-                        , jsonObject.optString("object_type")
-                        , jsonObject.optString("image"));
-                mObjectList.add(objectItem);
-
+        if (AppData.getInstance().ObjectList == null) {
+            AssetManager assetManager = getResources().getAssets();
+            InputStream inputStream = null;
+            String jsonString = "";
+            try {
+                inputStream = assetManager.open("object_list.json");
+                int size = inputStream.available();
+                byte[] buffer = new byte[size];
+                inputStream.read(buffer);
+                inputStream.close();
+                jsonString = new String(buffer);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                JSONObject rootObject = new JSONObject(jsonString);
+                JSONArray jsonArray = rootObject.optJSONArray("object_list");
+                mObjectList = new ArrayList<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    ObjectItem objectItem = new ObjectItem(mContext
+                            , jsonObject.optString("name")
+                            , jsonObject.optString("object_type")
+                            , jsonObject.optString("image"));
+                    mObjectList.add(objectItem);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            AppData.getInstance().ObjectList = mObjectList;
         }
+        mObjectList = AppData.getInstance().ObjectList;
     }
 }
-

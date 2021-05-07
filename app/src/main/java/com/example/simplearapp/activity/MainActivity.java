@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
 //                mArObjectHelper = new ArObjectHelper(mContext, arFragment, mObjectType, false);
                 mArObjectHelper.setDeleteMode(true);
-//                mArObjectHelper.setRenderable();
+//                mArObjectHelper.startRenderable();
 
             }
         });
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 AppData.getInstance().ObjectType = mObjectType;
                 Log.i(TAG, "object_type : " + mObjectType.name());
 
-                mArObjectHelper.setModel(mObjectType);
+                mArObjectHelper.setModel(AppData.getInstance().ObjectType);
 
 //                mArObjectHelper.setObject_type(mObjectType);
 //                if (mObjectType.name().equals(ArObjectHelper.OBJECT_TYPE.RESOURCE)) {

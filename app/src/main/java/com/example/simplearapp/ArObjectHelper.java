@@ -85,7 +85,6 @@ public class ArObjectHelper {
         buildObject(object_type);
     }
 
-
     public void setModel(OBJECT_TYPE object_type, boolean isAnimateObject) {
         this.object_type = object_type;
         this.isAnimateObject = isAnimateObject;
@@ -143,7 +142,9 @@ public class ArObjectHelper {
                     return;
                 }
                 // animation이 있는 Object는 1개만 사용가능함
-                if (!isAnimationObjectRunning) {
+                if (isAnimateObject && isAnimationObjectRunning) {
+                    alertAnimObject();
+                } else {
                     Anchor anchor = hitResult.createAnchor();
                     AnchorNode anchorNode = new AnchorNode(anchor);
                     anchorNode.setParent(arFragment.getArSceneView().getScene());
@@ -152,15 +153,11 @@ public class ArObjectHelper {
                     TransformableNode andy = new TransformableNode(arFragment.getTransformationSystem());
                     andy.setParent(anchorNode);
                     andy.setRenderable(modelRenderable);
-
                     if (isAnimateObject) {
                         setObjectAnimation();
                         isAnimationObjectRunning = true;
                     }
                     andy.select();
-
-                } else {
-                    alertAnimObject();
                 }
             }
         });
@@ -268,6 +265,6 @@ public class ArObjectHelper {
         } else {
             isAnimateObject = true;
         }
-
     }
+
 }
