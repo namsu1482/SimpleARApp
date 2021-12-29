@@ -50,7 +50,7 @@ public class ArObjectHelper {
         isAnimateObject = animateObject;
     }
 
-    // AR Object Type RESOURCE를 제외한 나머지 3개는 라이브러리에서 제공된다.
+    // AR Object Type resource 를 제외한 나머지 3개는 라이브러리에서 제공된다.
     public enum OBJECT_TYPE {
         CUBE,
         CYLINDER,
@@ -108,6 +108,7 @@ public class ArObjectHelper {
 
             case RESOURCE:
                 ModelRenderable.builder()
+                        // 애니메이션 모델 사용시 andy_dance 사용
                         .setSource(context, R.raw.andy_dance)
                         .build()
                         .thenAccept(renderable -> modelRenderable = renderable)
@@ -120,6 +121,7 @@ public class ArObjectHelper {
     }
 
     public void startRenderable() {
+        modifyPlaneRenderer();
         buildObject(object_type);
         arFragment.setOnTapArPlaneListener(new BaseArFragment.OnTapArPlaneListener() {
             @Override
@@ -148,11 +150,12 @@ public class ArObjectHelper {
             }
         });
 
+        //TODO remove object 로직 수정 필요
         removeObject();
-//        modifyPlaneRenderer();
+
     }
 
-    // 이미지를 이용해 평면 렌더링
+    // 이미지를 이용해 평면 렌더링, 바닥 이미지 변경
     private void modifyPlaneRenderer() {
         Texture.Sampler sampler = Texture.Sampler.builder()
                 // texture 확대
@@ -194,12 +197,7 @@ public class ArObjectHelper {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Object Alert");
         builder.setMessage("animation Object can be used one");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
+        builder.setPositiveButton("OK", null);
         builder.show();
     }
 
